@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <junit.version>5.10.2</junit.version>
-        <poi.version>5.2.5</poi.version>
+        <poi.version>5.5.1</poi.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
@@ -50,6 +50,9 @@
         <maven-gpg-plugin.version>3.2.6</maven-gpg-plugin.version>
         <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
         <github.packages.repo>https://maven.pkg.github.com/connellite/ExcelRowIterator</github.packages.repo>
+        <!-- Stable JPMS name for the JAR manifest (no module-info: POI still pulls commons-math3 without Automatic-Module-Name). -->
+        <java.module.name>io.github.connellite.excelrowiterator</java.module.name>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
     </properties>
 
     <dependencies>
@@ -81,7 +84,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <!-- JUnit tests are not on the module path; main sources use module-info. -->
                     <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>
@@ -113,6 +115,19 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

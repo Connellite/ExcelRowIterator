@@ -23,6 +23,10 @@ Small Java 17 library: forward-only iterators and streams over Apache POI sheets
 
 This artifact depends only on `poi` (usermodel). To open `.xlsx` workbooks, add `poi-ooxml` in your project.
 
+## JPMS
+
+The JAR declares `Automatic-Module-Name: io.github.connellite.excelrowiterator` (no `module-info.class`). A full `module-info` was avoided because Apache POI still depends on `commons-math3`, which has no stable module name in its manifest—tooling that scans the module graph (for example before publishing to Maven Central) flags that combination.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
