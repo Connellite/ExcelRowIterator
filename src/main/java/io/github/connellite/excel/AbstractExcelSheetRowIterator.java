@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.ArrayList;
@@ -68,6 +69,36 @@ public abstract class AbstractExcelSheetRowIterator<V> implements Iterator<Map<S
 
     private static boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    /**
+     * Cell value for data rows: strings, {@link Double} for plain numbers, {@link Boolean}, formatted string for
+     * dates, cached formula result (not the formula text).
+     */
+    protected Object getCellObjectValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC ->
+                    DateUtil.isCellDateFormatted(cell) ? formatter.formatCellValue(cell) : cell.getNumericCellValue();
+            case BOOLEAN -> cell.getBooleanCellValue();
+            case FORMULA -> formulaResultObject(cell);
+            case BLANK -> null;
+            default -> formatter.formatCellValue(cell);
+        };
+    }
+
+    private Object formulaResultObject(Cell cell) {
+        return switch (cell.getCachedFormulaResultType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC ->
+                    DateUtil.isCellDateFormatted(cell) ? formatter.formatCellValue(cell) : cell.getNumericCellValue();
+            case BOOLEAN -> cell.getBooleanCellValue();
+            case BLANK -> null;
+            default -> formatter.formatCellValue(cell);
+        };
     }
 
     /**

@@ -5,7 +5,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +36,8 @@ class ExcelRowIteratorTest {
             assertTrue(it.hasNext());
             Map<String, Object> row = it.next();
             assertEquals("a", row.get("name"));
-            assertInstanceOf(BigDecimal.class, row.get("amount"));
-            assertEquals(new BigDecimal("42.5"), row.get("amount"));
+            assertInstanceOf(Double.class, row.get("amount"));
+            assertEquals(42.5, (Double) row.get("amount"), 0.0);
             assertFalse(it.hasNext());
         }
     }
