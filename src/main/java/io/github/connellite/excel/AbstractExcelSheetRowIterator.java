@@ -16,9 +16,9 @@ import java.util.Map;
 /**
  * Forward-only iterator over data rows of an Apache POI {@link Sheet}. The first row is treated as a header;
  * column names are derived from that row (blank headers become {@code Column_0}, {@code Column_1}, …).
- * Implements {@link Iterable} so you can use {@code for (Map<String, V> row : it)} together with
- * try-with-resources. {@link #iterator()} returns {@code this}; the cursor is single-pass, so a second
- * enhanced for-loop on the same instance does not replay rows from the start.
+ * This type implements only {@link Iterator} (not {@link Iterable}) so APIs with overloads for both
+ * (for example {@code org.jooq.lambda.Seq.seq}) remain unambiguous when passed this instance.
+ * For enhanced for-loops use {@link #asIterable()}; it is single-pass and delegates to this iterator.
  * <p>
  * {@link #close()} closes the {@link Workbook} passed to the constructor. Do not close the same workbook
  * again afterward (for example avoid wrapping the workbook in a second try-with-resources if the iterator
@@ -28,7 +28,7 @@ import java.util.Map;
  * @see ExcelRowIterator
  * @see ExcelRowStringIterator
  */
-public abstract class AbstractExcelSheetRowIterator<V> implements Iterator<Map<String, V>>, Iterable<Map<String, V>>, AutoCloseable {
+public abstract class AbstractExcelSheetRowIterator<V> implements Iterator<Map<String, V>>, AutoCloseable {
 
     private final Workbook workbook;
     protected final List<String> columnNames;
@@ -102,13 +102,10 @@ public abstract class AbstractExcelSheetRowIterator<V> implements Iterator<Map<S
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * Returns {@code this} as the only iterator; one traversal consumes the sheet rows after the header.
+     * Single-pass {@link Iterable} view for enhanced for-loops. {@link Iterable#iterator()} returns
      */
-    @Override
-    public Iterator<Map<String, V>> iterator() {
-        return this;
+    public Iterable<Map<String, V>> asIterable() {
+        return () -> AbstractExcelSheetRowIterator.this;
     }
 
     @Override
@@ -131,11 +128,8 @@ public abstract class AbstractExcelSheetRowIterator<V> implements Iterator<Map<S
      */
     @Override
     public void close() throws Exception {
-        try {
-            if (workbook != null) {
-                workbook.close();
-            }
-        } catch (Exception ignore) {
+        if (workbook != null) {
+            workbook.close();
         }
     }
 }
