@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -43,6 +44,6 @@ public class ExcelRowIterator extends AbstractExcelSheetRowIterator<Object> {
             throw new ExcelSheetRowException(e);
         }
 
-        return rowData;
+        return Collections.unmodifiableMap(rowData);
     }
 }

@@ -16,7 +16,7 @@ Small Java 17 library: forward-only iterators and streams over Apache POI sheets
 <dependency>
     <groupId>io.github.connellite</groupId>
     <artifactId>ExcelRowIterator</artifactId>
-    <version>0.3</version>
+    <version>1.0</version>
 </dependency>
 ```
 

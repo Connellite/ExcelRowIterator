@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -46,7 +47,7 @@ public class ExcelRowStringIterator extends AbstractExcelSheetRowIterator<String
             throw new ExcelSheetRowException(e);
         }
 
-        return rowData;
+        return Collections.unmodifiableMap(rowData);
     }
 
     private static String objectToPlainString(Object value) {
